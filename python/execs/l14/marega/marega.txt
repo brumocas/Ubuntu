@@ -1,0 +1,9 @@
+
+ÉPOCA	EQUIPA	J	G	AST
+2021/22	Arábia_Saudita	Al_Hilal	32	14	5
+2020/21	Portugal	FC_Porto	45	12	2
+2019/20	Portugal	FC_Porto	45	15	5
+2018/19	Portugal	FC_Porto	47	21	8
+2017/18	Portugal	FC_Porto	41	23	6
+2016/17	Portugal	Vitória_SC 31	14	7
+2015/16	Portugal	FC_Porto	13	1	0
