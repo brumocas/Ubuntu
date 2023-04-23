@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "stdbool.h": "c",
+        "modbus.h": "c",
+        "cstdint": "cpp",
+        "stdint.h": "c",
+        "stdint-gcc.h": "c",
+        "type_traits": "c"
+    }
+}
