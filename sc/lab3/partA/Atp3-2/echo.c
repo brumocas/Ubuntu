@@ -104,23 +104,33 @@ static int echo_init(void)
 	// - Minor number starts from 0
 	// - Only one device needs to be managed by the driver
 
-	if (result < 0) {
-		printk(KERN_ERR "Failed to register echo device driver\n");
-		return result;
-	}
+	
 
     // TODOs (Exercise 4): Create struture to represent char devices
+	// Initialize the character device
+    mydev = cdev_alloc();
+	mycdev->owner = THIS_MODULE;
+	mycdev->ops = &myfops;
+	
 
     // TODO (Exercise 4): Register character device into the kernel
+	result = cdev_add(&mycdev, mydev, 1);
+	
 	if (result < 0){
 		printk(KERN_ERR "Failed to register echo device driver\n");
 		return result;
-	}
+	}	
 
 	// TODO (Exercise 2) print "Echo device driver registered with major number X" to the kernel logging buffer so that:
 	// - X is the obtained major number during registration
 	// - Message printed using the informational log evel
-	printk(KERN_INFO "Echo device driver registered with major number %d\n", MAJOR(mydev));
+
+	if (alloc_chrdev_region(&mydev,0,1,"echo") < 0)
+	{
+		printk(KERN_ERR "Failed to register echo device driver\n");
+	}
+	
+	printk(KERN_INFO "Echo device driver registered with major number %d and minor number %d\n", MAJOR(mydev), MINOR(mydev));
 
 	return 0;
 }
@@ -128,8 +138,10 @@ static int echo_init(void)
 static void echo_exit(void)
 {
     // TODO (Exercise 4): Deregister character device
+	cdev_del(&mycdev);
 	
     // TODO (Exercise 2): Deregister the device driver's device numbers
+    unregister_chrdev_region(mydev, 1);
 
 	// TODO (Exercise 2): Print "Echo device driver deregistered" to the kernel logginf buffer using the information log level
 	printk(KERN_INFO "Echo device driver deregistered\n");
