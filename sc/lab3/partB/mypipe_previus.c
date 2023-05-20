@@ -29,8 +29,7 @@ static struct file_operations myfops = {
 	.read = mypipe_read,
 	.write = mypipe_write,
 	.open = mypipe_open,
-	.release = mypipe_release,
-	.llseek = no_llseek
+	.release = mypipe_release
 };
 /***********/
 #define BUFFER_MAX_SIZE 100
@@ -64,7 +63,7 @@ static int mypipe_release(struct inode *inode, struct file *filp)
 }
 /************/
 ssize_t mypipe_read(struct file *filep, char __user *buff, size_t count, loff_t *offp)
-{	/*
+{
     // Should read data from circ_buffer and transfer it to user space.
 	int i, rd_count = 0 ;
 	char rd_data = 0 ;
@@ -80,30 +79,28 @@ ssize_t mypipe_read(struct file *filep, char __user *buff, size_t count, loff_t 
 
 		if(copy_to_user( (void __user *) buff + i, (const void *)&rd_data, (unsigned long) 1) != 0) // return is 0 for OK
 		{
-			printk(KERN_INFO "Error while copying to user space.\n");
+			printK(KERN_INFO "Error while copying to user space.\n");
 			return -1; //error copying
 		}
 		
 		rd_count ++;
-		printk(KERN_INFO "mypipe_read(): %d bytes were read...\n",rd_count);
+		printK(KERN_INFO "mypipe_read(): %d bytes were read...\n",rd_count);
 
 	} 
 
 	if(rd_count == 0) // buffer empty from the start
 	{
-			printk(KERN_INFO "mypipe_read(): FIFO empty\n");
+			printK(KERN_INFO "mypipe_read(): FIFO empty\n");
 			return 0; //Signal error to reading process
 	}
 	else
 	{
 			return ((ssize_t) rd_count + 1); //something was read
-	}*/
-	return -1;
+	}
 }
-/************/	
+/************/
 ssize_t mypipe_write(struct file *filep, const char __user *buff, size_t count, loff_t *offp)
 {	
-	/*
     // Should write data from user space to circ_buffer.
 	int i, wr_count = 0;
 	char wr_data;
@@ -113,32 +110,31 @@ ssize_t mypipe_write(struct file *filep, const char __user *buff, size_t count, 
 		//wr_data = *(buff + i); // get input data
 		if(copy_from_user((void *) &wr_data, (const void __user *) buff + i, (unsigned long) 1) != 0) // return is 0 for OK
 		{
-			printk(KERN_INFO "Error while copying from user space.\n");
+			printK(KERN_INFO "Error while copying from user space.\n");
 			return -1; //error copying
 		}
 
 		if(circ_buff_push( &mypipe_buffer, wr_data )	 != 0) //retunr is 0 if OK
 		{
-			printk(KERN_INFO "String is larger than buffer size... Breaking loop...\n");
+			printK(KERN_INFO "String is larger than buffer size... Breaking loop...\n");
 			break;
 		}
 		wr_count++;
-		printk(KERN_INFO "mypipe_write(): %d bytes were written...\n",wr_count);
+		printK(KERN_INFO "mypipe_write(): %d bytes were written...\n",wr_count);
 		
 
 	}
 
 	if(wr_count == 0 ) // buffer full from start
 	{
-		printk(KERN_INFO "mypipe_write(): FIFO full\n");
+		printK(KERN_INFO "mypipe_write(): FIFO full\n");
 		return -1; //signal error 	to the writing process
 	}
 	else
 	{	
 		return((ssize_t)wr_count + 1); //something as written
 	}
-	*/
-	return -1;
+	
 }
 /**************/
 static int mypipe_init(void)
@@ -164,7 +160,7 @@ static int mypipe_init(void)
 	mycdev->ops = &myfops;
 
     // Register character device into the kernel
-	result = cdev_add(mycdev, mydev, 1);
+	result = cdev_add(&mycdev, mydev, 1);
     if (result < 0){
         printk(KERN_ERR "Failed to register character device info\n");
         return result;

@@ -38,22 +38,27 @@ static struct file_operations myfops = {
 	.read = echo_read,
 	.write = echo_write,
 	.open = echo_open,
-	.release = echo_release
+	.release = echo_release,
 	// TODO (Exercise 5): Make this a non-seekable device
+	.llseek = no_llseek
 };
 
 // Here, the driver should define some variables for storing the number of echoed characters 
 // since the last time a read instruction was called...
 
 static int echo_open(struct inode *inode, struct file *filp)
-{
+{	
+
     // TODO (Exercise 5): Properly link file's private_data
+	filp->private_data = mycdev;
 
     // TODO (Exercise 5): Make this a non-seekable device
+	nonseekable_open(inode, filp);
+		
 
 	// for debug:
 	printk(KERN_INFO "echo_open(): Returning\n");
-	return -1;
+	return 0;
 }
 
 static int echo_release(struct inode *inode, struct file *filp)
@@ -104,33 +109,31 @@ static int echo_init(void)
 	// - Minor number starts from 0
 	// - Only one device needs to be managed by the driver
 
-	
 
-    // TODOs (Exercise 4): Create struture to represent char devices
+	// TODO (Exercise 2) print "Echo device driver registered with major number X" to the kernel logging buffer so that:
+	// - X is the obtained major number during registration
+	// - Message printed using the informational log evel
+	if (alloc_chrdev_region(&mydev,0,1,"echo") < 0)
+	{
+		printk(KERN_ERR "Failed to register echo device driver\n");
+	}	
+	
+	printk(KERN_INFO "Echo device driver registered with major number %d and minor number %d\n", MAJOR(mydev), MINOR(mydev));
+
+
 	// Initialize the character device
-    mydev = cdev_alloc();
+    mycdev = cdev_alloc();
 	mycdev->owner = THIS_MODULE;
 	mycdev->ops = &myfops;
 	
 
     // TODO (Exercise 4): Register character device into the kernel
-	result = cdev_add(&mycdev, mydev, 1);
-	
+	// atention &
+	result = cdev_add(mycdev, mydev, 1);
 	if (result < 0){
 		printk(KERN_ERR "Failed to register echo device driver\n");
 		return result;
-	}	
-
-	// TODO (Exercise 2) print "Echo device driver registered with major number X" to the kernel logging buffer so that:
-	// - X is the obtained major number during registration
-	// - Message printed using the informational log evel
-
-	if (alloc_chrdev_region(&mydev,0,1,"echo") < 0)
-	{
-		printk(KERN_ERR "Failed to register echo device driver\n");
 	}
-	
-	printk(KERN_INFO "Echo device driver registered with major number %d and minor number %d\n", MAJOR(mydev), MINOR(mydev));
 
 	return 0;
 }
@@ -138,8 +141,9 @@ static int echo_init(void)
 static void echo_exit(void)
 {
     // TODO (Exercise 4): Deregister character device
+	// Prof não faz este passo
 	cdev_del(&mycdev);
-	
+		
     // TODO (Exercise 2): Deregister the device driver's device numbers
     unregister_chrdev_region(mydev, 1);
 
