@@ -64,7 +64,7 @@ static int mypipe_release(struct inode *inode, struct file *filp)
 }
 /************/
 ssize_t mypipe_read(struct file *filep, char __user *buff, size_t count, loff_t *offp)
-{	/*
+{	
     // Should read data from circ_buffer and transfer it to user space.
 	int i, rd_count = 0 ;
 	char rd_data = 0 ;
@@ -97,13 +97,12 @@ ssize_t mypipe_read(struct file *filep, char __user *buff, size_t count, loff_t 
 	else
 	{
 			return ((ssize_t) rd_count + 1); //something was read
-	}*/
-	return -1;
+	}
 }
 /************/	
 ssize_t mypipe_write(struct file *filep, const char __user *buff, size_t count, loff_t *offp)
 {	
-	/*
+	
     // Should write data from user space to circ_buffer.
 	int i, wr_count = 0;
 	char wr_data;
@@ -137,8 +136,7 @@ ssize_t mypipe_write(struct file *filep, const char __user *buff, size_t count, 
 	{	
 		return((ssize_t)wr_count + 1); //something as written
 	}
-	*/
-	return -1;
+
 }
 /**************/
 static int mypipe_init(void)
