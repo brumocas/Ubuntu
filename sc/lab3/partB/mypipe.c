@@ -10,7 +10,7 @@ MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("SC2022/2023");
 MODULE_DESCRIPTION("Simple pipe character device driver");
 MODULE_VERSION("0:0.1");
-
+	
 /** module functions **/
 static int mypipe_init(void);
 static void mypipe_exit(void);
