@@ -13,10 +13,12 @@ void report_and_exit(const char* msg) {
 
 // Producer process/thread. Receives the file descriptor and string to be written.
 int producer(int fd, char *str) {
+  
   // Write string to the device and print a message.
   write(fd, str, strlen(str));
   printf("Producer wrote data '%s' to file...\n", str);
   printf("Returning from producer\n");
+  
   return 0;
 }
 
@@ -68,5 +70,7 @@ int main(int argc, char *argv[]) {
   wait(NULL);
   printf("parent: terminating\n");
 
+
+  close(file_descriptor);
   return 0;
 }

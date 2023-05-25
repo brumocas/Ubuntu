@@ -68,7 +68,6 @@ ssize_t mypipe_read(struct file *filep, char __user *buff, size_t count, loff_t 
     // Should read data from circ_buffer and transfer it to user space.
 	int i, rd_count = 0 ;
 	char rd_data = 0 ;
-	//char rd_data_str = rd_data + '0';
 
 	for(i = 0; i < count ;i++)
 	{	
@@ -179,7 +178,7 @@ static int mypipe_init(void)
 static void mypipe_exit(void)
 {
     // deregister character device
-	cdev_del(&mycdev);
+	cdev_del(mycdev);
 
     // deregister the device driver's device numbers
 	unregister_chrdev_region(mydev, 1);
