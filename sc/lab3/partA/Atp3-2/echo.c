@@ -143,7 +143,7 @@ static void echo_exit(void)
 {
     // TODO (Exercise 4): Deregister character device
 	// Prof não faz este passo
-	cdev_del(&mycdev);
+	cdev_del(mycdev);
 		
     // TODO (Exercise 2): Deregister the device driver's device numbers
     unregister_chrdev_region(mydev, 1);
