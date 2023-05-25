@@ -113,7 +113,8 @@ static int echo_init(void)
 	// TODO (Exercise 2) print "Echo device driver registered with major number X" to the kernel logging buffer so that:
 	// - X is the obtained major number during registration
 	// - Message printed using the informational log evel
-	if (alloc_chrdev_region(&mydev,0,1,"echo") < 0)
+	result = alloc_chrdev_region(&mydev,0,1,"echo");
+	if ( result < 0)
 	{
 		printk(KERN_ERR "Failed to register echo device driver\n");
 	}	

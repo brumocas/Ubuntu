@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 
   int file_descriptor = open(argv[1], O_RDWR);
   if (file_descriptor < 0)
-    report_and_exit("Both open failed...");
+    report_and_exit("Open failed...");
 
   // Launch the producer/consumer processes.
   pid_t pid = fork();
@@ -50,23 +50,11 @@ int main(int argc, char *argv[]) {
   if (pid < 0) {
     report_and_exit("Fork failed...");
   } else if (pid == 0) {
-
     // Child process - producer
-    printf("Process (%d): executing the consumer\n",getpid());
-    producer(open("/dev/mypipe", O_WRONLY), argv[2]);
-
     close(file_descriptor); // Close unused file descriptor
-    exit(0);
-
-  } 
-  else {
+    return producer(open("/dev/mypipe", O_WRONLY), argv[2]);
+  } else {
     // Parent process - consumer
-    printf("Process (%d): executing the producer\n",getpid());
-    consumer(file_descriptor);
+    return consumer(file_descriptor);
   }
-  // wait for child process
-  wait(NULL);
-  printf("parent: terminating\n");
-
-  return 0;
 }
